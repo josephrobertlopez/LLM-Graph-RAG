@@ -23,7 +23,7 @@ def llm_call(prompt: str, system_prompt: str = "", model="claude-3-5-sonnet-2024
         max_tokens=4096,
         system=system_prompt,
         messages=messages,
-        temperature=0.1,
+        temperature=1,
     )
     return response.content[0].text
 
