@@ -1,35 +1,40 @@
-from anthropic import Anthropic
 import os
 import re
+from openai import OpenAI
 
-client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+client = OpenAI(
+    base_url="http://localhost:1234/v1",  # LM Studio local endpoint
+    api_key="lm-studio",  # dummy value; LM Studio doesn't validate API keys
+)
 
-def llm_call(prompt: str, system_prompt: str = "", model="claude-3-5-sonnet-20241022") -> str:
+def llm_call(prompt: str, system_prompt: str = "", model="local-model") -> str:
     """
-    Calls the model with the given prompt and returns the response.
+    Calls the local LM Studio model with the given prompt and returns the response.
 
     Args:
         prompt (str): The user prompt to send to the model.
         system_prompt (str, optional): The system prompt to send to the model. Defaults to "".
-        model (str, optional): The model to use for the call. Defaults to "claude-3-5-sonnet-20241022".
+        model (str, optional): The model to use for the call. Defaults to "local-model".
 
     Returns:
         str: The response from the language model.
     """
-    client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    messages = [{"role": "user", "content": prompt}]
-    response = client.messages.create(
+    messages = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": prompt})
+
+    response = client.chat.completions.create(
         model=model,
-        max_tokens=4096,
-        system=system_prompt,
         messages=messages,
+        max_tokens=4096,
         temperature=1,
     )
-    return response.content[0].text
+    return response.choices[0].message.content
 
 def extract_xml(text: str, tag: str) -> str:
     """
-    Extracts the content of the specified XML tag from the given text. Used for parsing structured responses 
+    Extracts the content of the specified XML tag from the given text.
 
     Args:
         text (str): The text containing the XML.
