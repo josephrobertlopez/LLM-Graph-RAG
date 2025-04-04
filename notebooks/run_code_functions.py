@@ -8,8 +8,10 @@ from datetime import datetime
 
 from classes import Config, GenerationResult
 
+import logging
 
-
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def validate_dependencies() -> List[str]:
     """Validate required test dependencies are installed"""
@@ -49,8 +51,12 @@ def setup_test_env():
             
         # Create directories
         for dir_path in [Config.SRC_DIR, Config.TEST_DIR_UNIT, 
-                        Config.FEATURE_DIR, Config.STEPS_DIR]:
+                         Config.FEATURE_DIR, Config.STEPS_DIR]:
             Path(dir_path).mkdir(parents=True, exist_ok=True)
+            init_file_path = Path(dir_path) / "__init__.py"
+            if not init_file_path.exists():
+                init_file_path.touch()  # Create an empty __init__.py file if it doesn't exist
+
         
         # Check dependencies
         missing = validate_dependencies()
@@ -104,10 +110,10 @@ def save_test_files(result: GenerationResult, iteration: int) -> Dict[str, str]:
     os.makedirs(iter_dir, exist_ok=True)
     
     file_mapping = {
-        "implementation": (result["code"], f"{iter_dir}/implementation.py"),
-        "unit_tests": (result["unit_tests"], f"{iter_dir}/test_implementation.py"),
-        "feature": (result["gherkin"], f"{iter_dir}/behavior.feature"),
-        "steps": (result["step_impl"], f"{iter_dir}/steps.py")
+        "implementation": (result["code"], f"{Config.SRC_DIR}/implementation.py"),
+        "unit_tests": (result["unit_tests"], f"{Config.TEST_DIR_UNIT}/test_implementation.py"),
+        "feature": (result["gherkin"], f"{Config.FEATURE_DIR}/behavior.feature"),
+        "steps": (result["step_impl"], f"{Config.STEPS_DIR}/steps.py")
     }
 
     files = {}

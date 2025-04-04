@@ -3,8 +3,10 @@ from constants import *
 from typing import Optional, Tuple
 from time import sleep
 from util import *
+import logging
 
-
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def generate(prompt: str, task: str, context: str = "") -> GenerationResult:
     """Generate solution via separate LLM calls per component."""

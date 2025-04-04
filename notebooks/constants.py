@@ -7,6 +7,20 @@ Format with:
 <UNIT_TESTS>Unit tests - test_implementation.py</UNIT_TESTS>
 <GHERKIN>Behavior scenarios behavior.feature</GHERKIN>
 <STEP_IMPL>Step implementations step.py</STEP_IMPL>
+
+Code is:
+project/
+  ├── src/
+  │   ├── __init__.py
+  │   └── implementation.py
+  ├── tests/
+  │   ├── __init__.py
+  │   ├── test_implementation.py
+  └── features/
+      ├── behavior.feature
+      └── steps/
+          └── steps.py
+
 """
 
 EVALUATOR_PROMPT = """
